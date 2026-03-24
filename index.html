@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETERNUM — Leave Your Mark on Eternity</title>
+<meta name="description" content="The world's digital monument. Secure your cell in humanity's permanent archive. $1 to be remembered. $5 to know yourself.">
+<meta property="og:title" content="ETERNUM — Leave Your Mark on Eternity">
+<meta property="og:description" content="The world's digital monument. $1 to be remembered forever. $5 to know yourself before you go.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://eternum.me">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   ETERNUM — CSS
+   ═══════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #06060b;
+  --bg-elevated: #0c0c14;
+  --bg-card: #0f0f1a;
+  --surface: #16162a;
+  --border: rgba(255,255,255,0.06);
+  --text: #e8e6e1;
+  --text-dim: #8a8a9a;
+  --text-muted: #55556a;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.15);
+  --gold-glow: rgba(201,168,76,0.3);
+  --blue: #4a6cf7;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'DM Sans', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; background: var(--bg); }
+
+body {
+  font-family: var(--sans);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--gold-dim); color: var(--gold); }
+
+a { color: var(--gold); text-decoration: none; transition: opacity 0.2s; }
+a:hover { opacity: 0.8; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* ─── Stars Background ─── */
+.stars {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+.stars canvas { width: 100%; height: 100%; }
+
+/* ─── Navigation ─── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 20px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, var(--bg), transparent);
+  transition: background 0.4s;
+}
+.nav.scrolled { background: rgba(6,6,11,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+.nav-logo {
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--text); font-weight: 400;
+}
+.nav-logo span { color: var(--gold); }
+.nav-counter {
+  font-family: var(--mono); font-size: 12px; color: var(--text-dim);
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-counter .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ─── Hero ─── */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; text-align: center;
+  position: relative; z-index: 1; padding: 120px 24px 80px;
+}
+.hero-badge {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 40px;
+  opacity: 0; animation: fadeUp 1s 0.2s forwards;
+}
+.hero h1 {
+  font-family: var(--serif); font-weight: 300; font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 1.05; letter-spacing: -0.02em; color: var(--text);
+  max-width: 800px; margin-bottom: 32px;
+  opacity: 0; animation: fadeUp 1s 0.4s forwards;
+}
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero-sub {
+  font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--text-dim);
+  max-width: 520px; line-height: 1.7; font-weight: 300;
+  margin-bottom: 48px;
+  opacity: 0; animation: fadeUp 1s 0.6s forwards;
+}
+.hero-ctas {
+  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+  opacity: 0; animation: fadeUp 1s 0.8s forwards;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 16px 36px; background: var(--gold); color: var(--bg);
+  font-family: var(--sans); font-size: 15px; font-weight: 600;
+  border: none; border-radius: 60px; cursor: pointer;
+  transition: all 0.3s; letter-spacing: 0.02em;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--gold-glow); opacity: 1; }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 16px 36px; background: transparent; color: var(--text);
+  font-family: var(--sans); font-size: 15px; font-weight: 500;
+  border: 1px solid var(--border); border-radius: 60px; cursor: pointer;
+  transition: all 0.3s; letter-spacing: 0.02em;
+}
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); opacity: 1; }
+
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  font-family: var(--mono); font-size: 11px; color: var(--text-muted);
+  letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0; animation: fadeUp 1s 1.2s forwards;
+}
+.hero-scroll::after {
+  content: ''; display: block; width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--text-muted), transparent);
+  margin: 12px auto 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Section commons ─── */
+.section {
+  position: relative; z-index: 1;
+  padding: 120px 0;
+}
+.section-label {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+}
+.section-title {
+  font-family: var(--serif); font-weight: 300; font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.15; color: var(--text); margin-bottom: 20px;
+}
+.section-desc {
+  font-size: 1.1rem; color: var(--text-dim); max-width: 560px; line-height: 1.7; font-weight: 300;
+}
+
+/* ─── Counter Section ─── */
+.counter-section { text-align: center; padding: 80px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.counter-num {
+  font-family: var(--mono); font-size: clamp(2.5rem, 6vw, 4.5rem);
+  color: var(--gold); font-weight: 400; letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+.counter-label { font-size: 1rem; color: var(--text-dim); font-weight: 300; }
+
+/* ─── How it Works ─── */
+.steps-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+  margin-top: 60px;
+}
+.step-card {
+  padding: 40px 32px; border: 1px solid var(--border);
+  border-radius: 16px; background: var(--bg-card);
+  transition: all 0.4s;
+}
+.step-card:hover { border-color: rgba(201,168,76,0.2); transform: translateY(-4px); }
+.step-num {
+  font-family: var(--mono); font-size: 12px; color: var(--gold);
+  margin-bottom: 20px; letter-spacing: 0.1em;
+}
+.step-card h3 {
+  font-family: var(--serif); font-size: 1.5rem; font-weight: 400;
+  margin-bottom: 12px; color: var(--text);
+}
+.step-card p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; font-weight: 300; }
+
+/* ─── Tiers ─── */
+.tiers-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  margin-top: 60px;
+}
+.tier {
+  padding: 48px 40px; border: 1px solid var(--border);
+  border-radius: 20px; background: var(--bg-card);
+  position: relative; overflow: hidden; transition: all 0.4s;
+}
+.tier:hover { transform: translateY(-4px); }
+.tier.featured { border-color: var(--gold); }
+.tier.featured::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.tier-badge {
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; margin-bottom: 24px;
+}
+.tier:first-child .tier-badge { background: var(--surface); color: var(--text-dim); }
+.tier.featured .tier-badge { background: var(--gold-dim); color: var(--gold); }
+.tier-price {
+  font-family: var(--serif); font-size: 3.5rem; font-weight: 300; color: var(--text);
+  margin-bottom: 8px;
+}
+.tier-price-note { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 28px; }
+.tier-name {
+  font-family: var(--serif); font-size: 1.6rem; font-weight: 400;
+  color: var(--text); margin-bottom: 16px;
+}
+.tier-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 32px; font-weight: 300; }
+.tier-features { list-style: none; margin-bottom: 36px; }
+.tier-features li {
+  padding: 10px 0; font-size: 0.9rem; color: var(--text-dim);
+  border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;
+}
+.tier-features li::before { content: '◆'; color: var(--gold); font-size: 8px; }
+.tier-btn {
+  width: 100%; padding: 16px; border-radius: 60px; font-family: var(--sans);
+  font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+  letter-spacing: 0.02em; border: none;
+}
+.tier:first-child .tier-btn {
+  background: transparent; border: 1px solid var(--border); color: var(--text);
+}
+.tier:first-child .tier-btn:hover { border-color: var(--gold); color: var(--gold); }
+.tier.featured .tier-btn {
+  background: var(--gold); color: var(--bg);
+}
+.tier.featured .tier-btn:hover { box-shadow: 0 8px 30px var(--gold-glow); transform: translateY(-2px); }
+
+/* ─── Certificate Preview ─── */
+.cert-section { text-align: center; }
+.cert-preview {
+  max-width: 480px; margin: 60px auto 0; padding: 48px 40px;
+  border: 1px solid rgba(201,168,76,0.3); border-radius: 20px;
+  background: linear-gradient(145deg, var(--bg-card), rgba(201,168,76,0.03));
+  position: relative;
+}
+.cert-preview::before {
+  content: ''; position: absolute; inset: -1px; border-radius: 20px;
+  background: linear-gradient(145deg, var(--gold-dim), transparent, var(--gold-dim));
+  z-index: -1; opacity: 0.5;
+}
+.cert-logo {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.4em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 32px;
+}
+.cert-title {
+  font-family: var(--serif); font-size: 1.8rem; font-weight: 300;
+  font-style: italic; color: var(--text); margin-bottom: 8px;
+}
+.cert-name {
+  font-family: var(--serif); font-size: 2.4rem; font-weight: 600;
+  color: var(--gold); margin-bottom: 24px;
+}
+.cert-coords {
+  font-family: var(--mono); font-size: 12px; color: var(--text-muted);
+  letter-spacing: 0.1em; margin-bottom: 32px;
+}
+.cert-line {
+  width: 60px; height: 1px; background: var(--gold); margin: 0 auto 32px; opacity: 0.4;
+}
+.cert-date { font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; }
+
+/* ─── Roadmap ─── */
+.roadmap-list { margin-top: 60px; }
+.roadmap-item {
+  display: flex; gap: 32px; padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+.roadmap-phase {
+  flex-shrink: 0; width: 80px;
+  font-family: var(--mono); font-size: 11px; color: var(--gold);
+  letter-spacing: 0.15em; text-transform: uppercase; padding-top: 4px;
+}
+.roadmap-item h3 {
+  font-family: var(--serif); font-size: 1.5rem; font-weight: 400;
+  color: var(--text); margin-bottom: 8px;
+}
+.roadmap-item p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; font-weight: 300; }
+
+/* ─── FAQ ─── */
+.faq-list { margin-top: 60px; max-width: 700px; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  padding: 24px 0; cursor: pointer; font-size: 1.05rem; color: var(--text);
+  display: flex; justify-content: space-between; align-items: center;
+  transition: color 0.2s;
+}
+.faq-q:hover { color: var(--gold); }
+.faq-q::after { content: '+'; font-family: var(--mono); font-size: 1.2rem; color: var(--text-muted); transition: transform 0.3s; }
+.faq-item.open .faq-q::after { transform: rotate(45deg); color: var(--gold); }
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s;
+  font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; font-weight: 300;
+}
+.faq-item.open .faq-a { max-height: 300px; padding-bottom: 24px; }
+
+/* ─── Footer ─── */
+.footer {
+  position: relative; z-index: 1;
+  padding: 60px 24px; text-align: center;
+  border-top: 1px solid var(--border);
+}
+.footer-logo {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px;
+}
+.footer p { font-size: 0.85rem; color: var(--text-muted); }
+.footer-quote {
+  font-family: var(--serif); font-style: italic; font-size: 1.1rem;
+  color: var(--text-dim); margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;
+}
+
+/* ─── Reveal Animation ─── */
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .steps-grid { grid-template-columns: 1fr; }
+  .tiers-grid { grid-template-columns: 1fr; }
+  .roadmap-item { flex-direction: column; gap: 12px; }
+  .roadmap-phase { width: auto; }
+  .tier { padding: 36px 28px; }
+  .nav { padding: 16px 20px; }
+  .hero { padding: 100px 20px 60px; }
+  .section { padding: 80px 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- Stars Canvas -->
+<div class="stars"><canvas id="starsCanvas"></canvas></div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">ETERNU<span>M</span></div>
+  <div class="nav-counter">
+    <span class="dot"></span>
+    <span id="navCount">1,247,803</span> cells archived
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <p class="hero-badge">Humanity's Digital Monument</p>
+  <h1>What will <em>remain</em><br>of you?</h1>
+  <p class="hero-sub">Secure your cell in humanity's permanent archive. Be remembered forever. Know yourself before you go.</p>
+  <div class="hero-ctas">
+    <a href="#tiers" class="btn-primary">Claim Your Cell &darr;</a>
+    <a href="#how" class="btn-secondary">How It Works</a>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- Live Counter -->
+<section class="counter-section">
+  <div class="container">
+    <div class="counter-num" id="liveCounter">1,247,803</div>
+    <div class="counter-label">humans have claimed their place in eternity</div>
+  </div>
+</section>
+
+<!-- How it Works -->
+<section class="section" id="how">
+  <div class="container">
+    <p class="section-label reveal">How it works</p>
+    <h2 class="section-title reveal">Three steps. No account.<br>Under sixty seconds.</h2>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">01</div>
+        <h3>Choose your cell</h3>
+        <p>Select your tier. $1 secures your place in the monument. $5 adds a personal AI-generated life analysis no one else will ever receive.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">02</div>
+        <h3>Leave your mark</h3>
+        <p>Your name or pseudonym. One photograph. Up to 100 words — a philosophy, a dedication, a confession, a greeting to the unborn.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">03</div>
+        <h3>Receive your proof</h3>
+        <p>Instantly receive your Certificate of Permanence — a cryptographically unique artifact showing your exact coordinates in the archive.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tiers -->
+<section class="section" id="tiers">
+  <div class="container">
+    <p class="section-label reveal">Choose your tier</p>
+    <h2 class="section-title reveal">Two ways to be remembered.</h2>
+    <p class="section-desc reveal">Both include your permanent cell in the archive. The question is how deeply you want to look.</p>
+    <div class="tiers-grid">
+
+      <!-- Tier 1: Cell -->
+      <div class="tier reveal">
+        <div class="tier-badge">The Cell</div>
+        <div class="tier-price">$1</div>
+        <div class="tier-price-note">one-time, forever</div>
+        <div class="tier-name">Your Mark</div>
+        <div class="tier-desc">Secure your place in humanity's permanent digital monument. Your name, your photo, your words — archived for eternity.</div>
+        <ul class="tier-features">
+          <li>Your name or pseudonym</li>
+          <li>One photograph</li>
+          <li>100-word inscription</li>
+          <li>Certificate of Permanence</li>
+          <li>Exact coordinates in the archive</li>
+        </ul>
+        <button class="tier-btn" onclick="document.getElementById('form-cell').scrollIntoView({behavior:'smooth'})">Claim Your Cell — $1</button>
+      </div>
+
+      <!-- Tier 2: Cell + Lifeprint -->
+      <div class="tier featured reveal">
+        <div class="tier-badge">The Cell + Lifeprint</div>
+        <div class="tier-price">$5</div>
+        <div class="tier-price-note">one-time, forever</div>
+        <div class="tier-name">Your Mark + Your Mirror</div>
+        <div class="tier-desc">Everything in The Cell, plus an AI-generated life pattern analysis. A document about you that no one else on Earth has ever received.</div>
+        <ul class="tier-features">
+          <li>Everything in The Cell</li>
+          <li>Your Life Pattern — trajectory analysis</li>
+          <li>Your Critical Window — the shift ahead</li>
+          <li>Your Blind Spot — what you don't know</li>
+          <li>Your One Move — what to do in 7 days</li>
+        </ul>
+        <button class="tier-btn" onclick="document.getElementById('form-cell').scrollIntoView({behavior:'smooth'})">Get Cell + Lifeprint — $5</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Certificate Preview -->
+<section class="section cert-section">
+  <div class="container">
+    <p class="section-label reveal">What you receive</p>
+    <h2 class="section-title reveal">Your Certificate of Permanence</h2>
+    <p class="section-desc reveal" style="margin: 0 auto;">Instantly generated. Cryptographically unique. Designed to be shared — or kept forever.</p>
+
+    <div class="cert-preview reveal">
+      <div class="cert-logo">◆ Eternum ◆</div>
+      <div class="cert-title">Certificate of Permanence</div>
+      <div class="cert-name">Your Name Here</div>
+      <div class="cert-coords">SECTOR 7 · BLOCK 4,592 · CELL 18</div>
+      <div class="cert-line"></div>
+      <div class="cert-date">ARCHIVED · MARCH 24, 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- Roadmap -->
+<section class="section">
+  <div class="container">
+    <p class="section-label reveal">The Endgame</p>
+    <h2 class="section-title reveal">Where your cell goes.</h2>
+    <p class="section-desc reveal">Digital servers are temporary. We're building something permanent.</p>
+    <div class="roadmap-list">
+      <div class="roadmap-item reveal">
+        <div class="roadmap-phase">Phase I</div>
+        <div>
+          <h3>The Digital Construct</h3>
+          <p>0 — 10,000,000 entries. Your cell lives on high-availability cloud infrastructure, accessible via an interactive 3D experience. Always online, always yours.</p>
+        </div>
+      </div>
+      <div class="roadmap-item reveal">
+        <div class="roadmap-phase">Phase II</div>
+        <div>
+          <h3>The Arctic Vault</h3>
+          <p>50,000,000 entries. The archive is etched onto physical preservation film (1,000+ year lifespan) and deposited into the Arctic World Archive in Svalbard, Norway. Safe from solar flares, cyber-attacks, and time itself.</p>
+        </div>
+      </div>
+      <div class="roadmap-item reveal">
+        <div class="roadmap-phase">Phase III</div>
+        <div>
+          <h3>Deep Time</h3>
+          <p>100,000,000+ entries. Encoded into synthetic DNA or 5D quartz glass. A physical payload sent beyond Earth. The monument becomes permanent in the deepest sense of the word.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="container">
+    <p class="section-label reveal">Questions</p>
+    <h2 class="section-title reveal">The things you're wondering.</h2>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <div class="faq-q">Why $1? What's the catch?</div>
+        <div class="faq-a">There is no catch. $1 covers compute, storage, and the permanent archival commitment. We're building the largest human monument ever created — not a subscription business. One payment, forever.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q">Is the Lifeprint real AI analysis or a template?</div>
+        <div class="faq-a">Every Lifeprint is generated in real-time by a frontier AI model analyzing your specific combination of inputs. Two people with the same age and country but different worries and dreams receive completely different results. It's not a template, not a horoscope — it's pattern recognition at scale.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q">Is my data stored or shared?</div>
+        <div class="faq-a">Your monument cell (name, photo, inscription) is stored in the archive — that's the point. Your Lifeprint answers are processed once by the AI and never stored. No accounts, no tracking, no selling of data. The AI forgets you the moment your analysis is generated.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q">What languages does it support?</div>
+        <div class="faq-a">16 languages including English, Spanish, Chinese, Arabic, Hindi, Russian, and more. Your inscription can be in any language. The Lifeprint is generated natively in your chosen language — not translated.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q">Will my cell really go to the Arctic / space?</div>
+        <div class="faq-a">Phase I is live now — your cell is digitally archived from the moment you claim it. Phases II and III activate at 50M and 100M entries respectively. The roadmap is public and the commitment is real. Every dollar raised is a step toward permanent preservation.</div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q">Can I update my cell later?</div>
+        <div class="faq-a">Your original cell is immutable — that's what makes it a monument. But you can claim additional cells as your life evolves. Many people return months or years later to add a new chapter to their archive.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p class="footer-quote">"We are all dust in the wind, but together, we build the monument."</p>
+  <div class="footer-logo">ETERNUM</div>
+  <p>&copy; 2026 ETERNUM. All rights reserved. <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+</footer>
+
+<script>
+// ─── Stars ───
+(function() {
+  const canvas = document.getElementById('starsCanvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    init();
+  }
+
+  function init() {
+    stars = [];
+    const count = Math.floor((canvas.width * canvas.height) / 8000);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        a: Math.random(),
+        speed: Math.random() * 0.005 + 0.002,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const t = Date.now() * 0.001;
+    stars.forEach(s => {
+      const alpha = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.speed * 60 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200, 190, 170, ${alpha * 0.6})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+// ─── Nav scroll ───
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ─── Reveal on scroll ───
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ─── FAQ Toggle ───
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => q.closest('.faq-item').classList.toggle('open'));
+});
+
+// ─── Counter Animation ───
+(function() {
+  let count = 1247803;
+  const el = document.getElementById('liveCounter');
+  const navEl = document.getElementById('navCount');
+
+  function fmt(n) { return n.toLocaleString('en-US'); }
+
+  setInterval(() => {
+    count += Math.floor(Math.random() * 3) + 1;
+    el.textContent = fmt(count);
+    navEl.textContent = fmt(count);
+  }, 4000 + Math.random() * 3000);
+})();
+</script>
+</body>
+</html>

@@ -580,16 +580,34 @@ a:hover { opacity: 0.8; }
   }
 
   function spawnComet() {
-    if (comets.length >= 2) return;
+    if (comets.length >= 4) return;
+    const side = Math.floor(Math.random() * 4);
+    let x, y, angle;
+    const w = canvas.width, h = canvas.height;
+    if (side === 0) { // top
+      x = Math.random() * w * 0.8 + w * 0.1;
+      y = -10;
+      angle = Math.PI * (0.12 + Math.random() * 0.25);
+    } else if (side === 1) { // left
+      x = -10;
+      y = Math.random() * h * 0.5;
+      angle = Math.PI * (0.05 + Math.random() * 0.15);
+    } else if (side === 2) { // top-right
+      x = w + 10;
+      y = Math.random() * h * 0.3;
+      angle = Math.PI * (0.6 + Math.random() * 0.25);
+    } else { // top angled steep
+      x = Math.random() * w * 0.6 + w * 0.2;
+      y = -10;
+      angle = Math.PI * (0.3 + Math.random() * 0.15);
+    }
     comets.push({
-      x: Math.random() * canvas.width * 0.8,
-      y: -10,
-      speed: 2 + Math.random() * 3,
-      angle: Math.PI * (0.15 + Math.random() * 0.2),
-      length: 60 + Math.random() * 100,
+      x, y, angle,
+      speed: 1.5 + Math.random() * 3.5,
+      length: 50 + Math.random() * 120,
       life: 1,
-      decay: 0.004 + Math.random() * 0.004,
-      width: 0.8 + Math.random() * 0.8
+      decay: 0.003 + Math.random() * 0.004,
+      width: 0.6 + Math.random() * 1
     });
   }
 
@@ -670,9 +688,10 @@ a:hover { opacity: 0.8; }
 
   // Spawn comets randomly
   setInterval(() => {
-    if (Math.random() < 0.4) spawnComet();
-  }, 3000);
-  setTimeout(spawnComet, 1500);
+    if (Math.random() < 0.55) spawnComet();
+  }, 2000);
+  setTimeout(spawnComet, 800);
+  setTimeout(spawnComet, 2200);
 
   window.addEventListener('resize', resize);
   resize();

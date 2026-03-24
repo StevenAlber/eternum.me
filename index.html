@@ -548,45 +548,131 @@ a:hover { opacity: 0.8; }
 </footer>
 
 <script>
-// ─── Stars ───
+// ─── Cosmos ───
 (function() {
   const canvas = document.getElementById('starsCanvas');
   const ctx = canvas.getContext('2d');
-  let stars = [];
+  let stars = [], comets = [];
+  const driftSpeed = 0.08;
 
   function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    init();
+    initStars();
   }
 
-  function init() {
+  function initStars() {
     stars = [];
-    const count = Math.floor((canvas.width * canvas.height) / 8000);
+    const count = Math.floor((canvas.width * canvas.height) / 5000);
     for (let i = 0; i < count; i++) {
       stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: Math.random() * 1.2 + 0.2,
-        a: Math.random(),
-        speed: Math.random() * 0.005 + 0.002,
-        phase: Math.random() * Math.PI * 2
+        r: Math.random() * 1.4 + 0.2,
+        phase: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 0.8 + 0.3,
+        dx: (Math.random() - 0.5) * driftSpeed,
+        dy: (Math.random() - 0.3) * driftSpeed * 0.6,
+        hue: Math.random() > 0.85 ? (Math.random() > 0.5 ? 40 : 220) : 0,
+        sat: Math.random() > 0.85 ? 40 : 0
       });
     }
+  }
+
+  function spawnComet() {
+    if (comets.length >= 2) return;
+    comets.push({
+      x: Math.random() * canvas.width * 0.8,
+      y: -10,
+      speed: 2 + Math.random() * 3,
+      angle: Math.PI * (0.15 + Math.random() * 0.2),
+      length: 60 + Math.random() * 100,
+      life: 1,
+      decay: 0.004 + Math.random() * 0.004,
+      width: 0.8 + Math.random() * 0.8
+    });
   }
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const t = Date.now() * 0.001;
-    stars.forEach(s => {
-      const alpha = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.speed * 60 + s.phase));
+    const w = canvas.width, h = canvas.height;
+
+    // Draw stars
+    for (const s of stars) {
+      s.x += s.dx;
+      s.y += s.dy;
+      if (s.x < -5) s.x = w + 5;
+      if (s.x > w + 5) s.x = -5;
+      if (s.y < -5) s.y = h + 5;
+      if (s.y > h + 5) s.y = -5;
+
+      const alpha = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(t * s.twinkleSpeed + s.phase));
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200, 190, 170, ${alpha * 0.6})`;
+      if (s.sat > 0) {
+        ctx.fillStyle = `hsla(${s.hue}, ${s.sat}%, 80%, ${alpha * 0.7})`;
+      } else {
+        ctx.fillStyle = `rgba(210, 200, 185, ${alpha * 0.6})`;
+      }
       ctx.fill();
-    });
+
+      // Glow for bigger stars
+      if (s.r > 1.1) {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201, 168, 76, ${alpha * 0.04})`;
+        ctx.fill();
+      }
+    }
+
+    // Draw comets
+    for (let i = comets.length - 1; i >= 0; i--) {
+      const c = comets[i];
+      c.x += Math.cos(c.angle) * c.speed;
+      c.y += Math.sin(c.angle) * c.speed;
+      c.life -= c.decay;
+
+      if (c.life <= 0 || c.x > w + 100 || c.y > h + 100) {
+        comets.splice(i, 1);
+        continue;
+      }
+
+      const tailX = c.x - Math.cos(c.angle) * c.length;
+      const tailY = c.y - Math.sin(c.angle) * c.length;
+
+      const grad = ctx.createLinearGradient(c.x, c.y, tailX, tailY);
+      grad.addColorStop(0, `rgba(255, 245, 220, ${c.life * 0.9})`);
+      grad.addColorStop(0.3, `rgba(201, 168, 76, ${c.life * 0.4})`);
+      grad.addColorStop(1, `rgba(201, 168, 76, 0)`);
+
+      ctx.beginPath();
+      ctx.moveTo(c.x, c.y);
+      ctx.lineTo(tailX, tailY);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = c.width;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Head glow
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 250, 230, ${c.life * 0.9})`;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(201, 168, 76, ${c.life * 0.15})`;
+      ctx.fill();
+    }
+
     requestAnimationFrame(draw);
   }
+
+  // Spawn comets randomly
+  setInterval(() => {
+    if (Math.random() < 0.4) spawnComet();
+  }, 3000);
+  setTimeout(spawnComet, 1500);
 
   window.addEventListener('resize', resize);
   resize();
